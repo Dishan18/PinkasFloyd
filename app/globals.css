@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--background: #ffffff;
+	--foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--background: #0a0a0a;
+		--foreground: #ededed;
+	}
+}
+
+* {
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none;
+}
+
+body {
+	overscroll-behavior: none;
+	color: var(--foreground);
+	background: var(--background);
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+@keyframes nonHomeSilkIn {
+	0% {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+body[data-non-home="true"] main {
+	animation: nonHomeSilkIn 340ms ease-out;
+}
+
+body[data-non-home="true"] button,
+body[data-non-home="true"] a,
+body[data-non-home="true"] input,
+body[data-non-home="true"] textarea,
+body[data-non-home="true"] select {
+	transition:
+		background-color 240ms ease,
+		border-color 240ms ease,
+		color 240ms ease,
+		opacity 240ms ease,
+		box-shadow 240ms ease,
+		transform 240ms ease;
+}
+
+body[data-non-home="true"] button,
+body[data-non-home="true"] input,
+body[data-non-home="true"] textarea,
+body[data-non-home="true"] select {
+	border-radius: 10px;
+}
+
+body[data-non-home="true"] .bg-black\/10,
+body[data-non-home="true"] .bg-black\/20,
+body[data-non-home="true"] .bg-black\/25,
+body[data-non-home="true"] .bg-black\/30,
+body[data-non-home="true"] .bg-black\/35,
+body[data-non-home="true"] .bg-black\/40 {
+	background-color: rgba(255, 255, 255, 0.045) !important;
+}
+
+body[data-non-home="true"] .backdrop-blur-sm,
+body[data-non-home="true"] .backdrop-blur-md,
+body[data-non-home="true"] .backdrop-blur-xl,
+body[data-non-home="true"] .backdrop-blur-2xl {
+	border-radius: 12px;
+}
+
+body[data-non-home="true"] .shadow-2xl,
+body[data-non-home="true"] .shadow-xl {
+	border-radius: 12px;
+}
+
+body[data-non-home="true"] article,
+body[data-non-home="true"] section {
+	transition:
+		background-color 240ms ease,
+		border-color 240ms ease,
+		transform 240ms ease;
+}
+
+:root {
+	--scrollbarColor: #fff;
+	--scrollbarBackground: rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar {
+	width: 7px;
+}
+
+::-webkit-scrollbar-track {
+	background: var(--scrollbarBackground);
+}
+::-webkit-scrollbar-thumb {
+	border-bottom: 100vh solid var(--scrollbarColor);
+}
+
+.close {
+	position: absolute;
+	left: 32px;
+	top: 32px;
+	width: 48px;
+	height: 48px;
+	opacity: 0.3;
+	cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+	.close {
+		margin-left: -24px;
+		margin-top: -16px;
+	}
+}
+
+.close:hover {
+	opacity: 1;
+}
+
+.close:before,
+.close:after {
+	position: absolute;
+	left: 2rem;
+	content: " ";
+	height: 48px;
+	width: 2px;
+	background-color: #0a0a0a;
+}
+
+.close:before {
+	transform: rotate(45deg);
+}
+
+.close:after {
+	transform: rotate(-45deg);
+}

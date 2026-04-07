@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /account
+Disallow: /cart
+Disallow: /payment
+Disallow: /orders
+Disallow: /wishlist
+Disallow: /reset-password
+Disallow: /_next/
+Host: https://pinkasfloyd.in
+
+Sitemap: https://pinkasfloyd.in/sitemap.xml
