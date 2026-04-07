@@ -8,7 +8,6 @@ import { posters } from "../../../constants/posters";
 import { useThree } from "@react-three/fiber";
 import gsap from "gsap";
 import * as THREE from "three";
-import { useIsLowEndMobile } from "../../../lib/deviceTier";
 
 const ProjectsCarousel = () => {
 	const [activeId, setActiveId] = useState<number | null>(null);
@@ -18,7 +17,6 @@ const ProjectsCarousel = () => {
 	const setIsTransitioning = usePortalStore(
 		(state) => state.setIsTransitioning,
 	);
-	const isLowEndMobile = useIsLowEndMobile();
 	const router = useRouter();
 	const { camera } = useThree();
 
@@ -39,9 +37,6 @@ const ProjectsCarousel = () => {
 			const col = i % itemsPerRow;
 			const row = Math.floor(i / itemsPerRow);
 
-			// Keep a clear gap around SEE MORE so no poster sits under/over it.
-			const middleRow = Math.floor(rows / 2);
-
 			// Angle distributes along the arc
 			const angle = (fov / itemsPerRow) * col - fov / 3;
 			const z = -distance * Math.cos(angle);
@@ -53,11 +48,15 @@ const ProjectsCarousel = () => {
 			const startY = ((rows - 1) * rowHeight) / 2;
 			const y = startY - row * rowHeight + 1; // +1 offset to match view level
 
-			if (row === middleRow) {
-				const tilePosition = new THREE.Vector3(x, y, z);
-				if (tilePosition.distanceTo(seeMorePosition) < 4) {
-					return null;
-				}
+			const tilePosition = new THREE.Vector3(x, y, z);
+			const isOnSeeMore = tilePosition.distanceTo(seeMorePosition) < 4;
+			const isUnderSeeMore =
+				tilePosition.y <= seeMorePosition.y + 0.5 &&
+				Math.abs(tilePosition.x - seeMorePosition.x) < 4.5 &&
+				Math.abs(tilePosition.z - seeMorePosition.z) < 5;
+
+			if (isOnSeeMore || isUnderSeeMore) {
+				return null;
 			}
 
 			return (
@@ -70,7 +69,7 @@ const ProjectsCarousel = () => {
 				/>
 			);
 		});
-	}, [activeId, isActive, isLowEndMobile]);
+	}, [activeId, isActive]);
 
 	return (
 		<group rotation={[0, -Math.PI / 12, 0]}>
