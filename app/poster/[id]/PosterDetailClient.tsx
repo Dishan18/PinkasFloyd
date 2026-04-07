@@ -33,13 +33,28 @@ type CartItem = {
 	quantity: number;
 };
 
-const dimensionsBySize: Record<string, string> = {
-	A3: '11.7" x 16.5"',
-	A4: '8.3" x 11.7"',
-	"12x12": '12.0" x 12.0"',
-	A6: '4.1" x 5.8"',
-	A7: '2.9" x 4.1"',
-};
+const sizeOrder = ["A3", "A4", "12x12", "A6", "A7"] as const;
+
+const sizeChartRows = [
+	{ size: "A3", inches: '11.7" x 16.5"' },
+	{ size: "A4", inches: '8.3" x 11.7"' },
+	{ size: "12x12", inches: '12.0" x 12.0"' },
+	{ size: "A6", inches: '4.1" x 5.8"' },
+	{ size: "A7", inches: '2.9" x 4.1"' },
+];
+
+const formatSizeLabel = (size: string) => (size === "12x12" ? "12*12" : size);
+
+function hexToRgba(hex: string, alpha: number) {
+	const normalized = hex.replace("#", "");
+	if (normalized.length !== 6) return `rgba(255, 255, 255, ${alpha})`;
+
+	const r = Number.parseInt(normalized.slice(0, 2), 16);
+	const g = Number.parseInt(normalized.slice(2, 4), 16);
+	const b = Number.parseInt(normalized.slice(4, 6), 16);
+
+	return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
 
 export default function PosterDetailClient({
 	poster,
@@ -52,6 +67,8 @@ export default function PosterDetailClient({
 }) {
 	const router = useRouter();
 	const theme = useThemeStore((state) => state.theme);
+	const chartDropdownBg = hexToRgba(theme.color, 0.9);
+	const chartDropdownBorder = hexToRgba(theme.color, 0.34);
 	const [selectedSize, setSelectedSize] = useState(poster.sizes[0] || "A3");
 	const [isFramed, setIsFramed] = useState(false);
 	const [isWishlisted, setIsWishlisted] = useState(initialWishlisted);
@@ -60,6 +77,14 @@ export default function PosterDetailClient({
 	const [wishlistPulseKey, setWishlistPulseKey] = useState(0);
 	const [resolvedUserId, setResolvedUserId] = useState(userId);
 	const [isWishlistSaving, setIsWishlistSaving] = useState(false);
+	const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
+
+	const displaySizes = useMemo(() => {
+		const preferredSizes = sizeOrder.filter((size) =>
+			poster.sizes.includes(size),
+		);
+		return preferredSizes.length > 0 ? preferredSizes : poster.sizes;
+	}, [poster.sizes]);
 
 	const basePrice =
 		posterPriceMap[selectedSize as keyof typeof posterPriceMap] || 99;
@@ -108,6 +133,12 @@ export default function PosterDetailClient({
 			isMounted = false;
 		};
 	}, [poster.id]);
+
+	useEffect(() => {
+		if (!displaySizes.includes(selectedSize)) {
+			setSelectedSize(displaySizes[0] || "A3");
+		}
+	}, [displaySizes, selectedSize]);
 
 	const noiseOverlayStyle = {
 		backgroundBlendMode: "soft-light" as const,
@@ -199,7 +230,7 @@ export default function PosterDetailClient({
 							{prevPoster && (
 								<Link
 									href={`/poster/${prevPoster.id}`}
-									className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full border border-[#bfc6cc] bg-[#bfc6cc] text-[#2F3437] flex items-center justify-center hover:bg-[#bfc6cc]/25 transition-colors"
+									className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center opacity-95 hover:opacity-100 transition-opacity"
 									title="Previous poster"
 								>
 									<Image
@@ -216,7 +247,7 @@ export default function PosterDetailClient({
 							{nextPoster && (
 								<Link
 									href={`/poster/${nextPoster.id}`}
-									className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full border border-[#bfc6cc] bg-[#bfc6cc] text-[#2F3437] flex items-center justify-center hover:bg-[#bfc6cc]/25 transition-colors"
+									className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-30 flex items-center justify-center opacity-95 hover:opacity-100 transition-opacity"
 									title="Next poster"
 								>
 									<Image
@@ -267,29 +298,95 @@ export default function PosterDetailClient({
 
 							<div className="pt-8 space-y-8">
 								<div className="space-y-3">
-									<p className="font-sans text-[10px] uppercase tracking-[0.35rem] text-white/70">
-										Size
-									</p>
-									<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-										{poster.sizes.map((size) => (
+									<div className="relative">
+										<button
+											type="button"
+											onClick={() => setIsSizeChartOpen((prev) => !prev)}
+											aria-expanded={isSizeChartOpen}
+											className="inline-flex items-center justify-between gap-2 pr-1 py-1 transition-all duration-300"
+											style={{
+												backgroundColor: "transparent",
+												color: "#bfc6cc",
+											}}
+										>
+											<div className="flex items-center justify-between gap-2">
+												<div className="flex items-center gap-2">
+													<svg
+														viewBox="0 0 24 24"
+														aria-hidden="true"
+														className="w-4 h-4 text-[#bfc6cc]"
+													>
+														<path
+															fill="currentColor"
+															d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Zm2 0v5h14V7h-3v3h-2V7h-2v2h-2V7H8v3H6V7H5Z"
+														/>
+													</svg>
+													<div className="text-left">
+														<p className="font-sans text-[9px] uppercase tracking-[0.2rem] text-[#bfc6cc]">
+															Size chart
+														</p>
+														<p className="font-sans text-[8px] uppercase tracking-[0.14rem] text-white/70 mt-0.5">
+															Size - {formatSizeLabel(selectedSize)}
+														</p>
+													</div>
+												</div>
+												<svg
+													viewBox="0 0 20 20"
+													aria-hidden="true"
+													className={`w-3.5 h-3.5 text-[#bfc6cc] transition-transform duration-500 ${isSizeChartOpen ? "rotate-180" : "rotate-0"}`}
+												>
+													<path
+														fill="currentColor"
+														d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.13l3.71-3.9a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z"
+													/>
+												</svg>
+											</div>
+										</button>
+
+										<div
+											className={`absolute left-0 top-[calc(100%+0.4rem)] z-20 w-[240px] sm:w-[260px] origin-top overflow-hidden backdrop-blur-xl border shadow-xl transition-all duration-300 ease-out ${
+												isSizeChartOpen
+													? "opacity-100 translate-y-0 max-h-80 pointer-events-auto"
+													: "opacity-0 -translate-y-2 max-h-0 pointer-events-none"
+											}`}
+											style={{
+												backgroundColor: chartDropdownBg,
+												borderColor: chartDropdownBorder,
+											}}
+										>
+											<div className="p-3 space-y-2">
+												{sizeChartRows
+													.filter((row) => displaySizes.includes(row.size))
+													.map((row) => (
+														<div
+															key={row.size}
+															className="grid grid-cols-[68px_1fr] items-center gap-3 border border-white/10 bg-black/20 px-3 py-2"
+														>
+															<span className="font-sans text-[10px] uppercase tracking-[0.18rem] text-[#bfc6cc]">
+																{formatSizeLabel(row.size)}
+															</span>
+															<p className="font-sans text-[10px] uppercase tracking-[0.1rem] text-white/85 text-right sm:text-left">
+																{row.inches}
+															</p>
+														</div>
+													))}
+											</div>
+										</div>
+									</div>
+
+									<div className="flex flex-wrap gap-1.5 pt-1">
+										{displaySizes.map((size) => (
 											<button
 												type="button"
 												key={size}
 												onClick={() => setSelectedSize(size)}
-												className={`px-3 py-2 border text-left transition-colors ${
+												className={`min-w-[48px] sm:min-w-[62px] lg:min-w-[68px] px-2 sm:px-2.5 lg:px-3 py-1.5 sm:py-1.5 lg:py-2 border rounded-full font-sans text-[8px] sm:text-[9px] lg:text-[10px] uppercase tracking-[0.08rem] sm:tracking-[0.1rem] lg:tracking-[0.12rem] transition-all duration-300 ${
 													selectedSize === size
-														? "border-[#bfc6cc] bg-[#bfc6cc] text-[#2F3437]"
-														: "border-[#bfc6cc]/45 bg-black/20 text-[#bfc6cc] hover:bg-[#bfc6cc]/25"
+														? "border-[#bfc6cc] bg-[#bfc6cc] text-[#101214]"
+														: "border-[#bfc6cc]/55 bg-transparent text-[#d8dfe6] hover:bg-[#bfc6cc]/18"
 												}`}
 											>
-												<div className="flex items-center justify-between gap-3">
-													<span className="font-sans text-[10px] uppercase tracking-[0.16rem]">
-														{size}
-													</span>
-													<span className="font-sans text-[9px] text-current/70 text-right">
-														{dimensionsBySize[size] || "Standard"}
-													</span>
-												</div>
+												{formatSizeLabel(size)}
 											</button>
 										))}
 									</div>
