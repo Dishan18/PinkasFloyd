@@ -30,7 +30,7 @@ const ProjectsCarousel = () => {
 		const fov = Math.PI * 1.5;
 		const distance = 15;
 
-		const rows = isMobile ? (isLowEndMobile ? 1 : 2) : 3;
+		const rows = isMobile ? 2 : 3;
 		const itemsPerRow = isMobile ? 8 : 12;
 		const displayPosters = posters.slice(0, rows * itemsPerRow);
 		const seeMorePosition = new THREE.Vector3(0, 1, -12);
