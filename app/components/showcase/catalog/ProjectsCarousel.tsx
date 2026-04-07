@@ -52,18 +52,6 @@ const ProjectsCarousel = () => {
 			const y = startY - row * rowHeight + 1; // +1 offset to match view level
 			const tilePosition = new THREE.Vector3(x, y, z);
 
-			if (isMobile) {
-				const centerStart = Math.floor(itemsPerRow / 2) - 1;
-				const centerEnd = Math.floor(itemsPerRow / 2);
-				const isNearSeeMore = tilePosition.distanceTo(seeMorePosition) < 4.2;
-				const isUnderSeeMoreLane =
-					row > 0 && col >= centerStart - 1 && col <= centerEnd + 1;
-
-				if (isNearSeeMore || isUnderSeeMoreLane) {
-					return null;
-				}
-			}
-
 			if (row === middleRow) {
 				if (tilePosition.distanceTo(seeMorePosition) < 4) {
 					return null;
