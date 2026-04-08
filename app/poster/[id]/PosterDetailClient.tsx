@@ -10,6 +10,7 @@ import StarsContainer from "@/app/components/models/Stars";
 import SiteNavbar from "@/app/components/common/SiteNavbar";
 import SiteFooter from "@/app/components/common/SiteFooter";
 import { useTheme } from "@/app/contexts/ThemeContext";
+import { getDropdownTransition } from "@/app/utils/animations";
 import { FRAMING_COST, posterPriceMap, posters } from "@/app/constants/posters";
 import {
 	fetchWishlistPosterIds,
@@ -344,11 +345,7 @@ export default function PosterDetailClient({
 										</button>
 
 										<div
-											className={`absolute left-0 top-[calc(100%+0.4rem)] z-20 w-[240px] sm:w-[260px] origin-top overflow-hidden backdrop-blur-xl border shadow-xl transition-all duration-300 ease-out ${
-												isSizeChartOpen
-													? "opacity-100 translate-y-0 max-h-80 pointer-events-auto"
-													: "opacity-0 -translate-y-2 max-h-0 pointer-events-none"
-											}`}
+											className={`absolute left-0 top-[calc(100%+0.4rem)] z-20 w-[240px] sm:w-[260px] overflow-hidden backdrop-blur-xl border shadow-xl ${getDropdownTransition(isSizeChartOpen)}`}
 											style={{
 												backgroundColor: chartDropdownBg,
 												borderColor: chartDropdownBorder,

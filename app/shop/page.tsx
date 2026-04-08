@@ -16,6 +16,7 @@ import CloudContainer from "../components/models/Cloud";
 import SiteNavbar from "../components/common/SiteNavbar";
 import SiteFooter from "../components/common/SiteFooter";
 import PosterSkeletonGrid from "../components/PosterSkeletonGrid";
+import { getDropdownTransition } from "@/app/utils/animations";
 
 type CategoryOption = {
 	key: string;
@@ -241,11 +242,7 @@ export default function Shop() {
 							</button>
 
 							<div
-								className={`absolute right-0 mt-2 w-full min-w-[260px] backdrop-blur-xl border shadow-xl overflow-hidden transition-all duration-300 ease-out origin-top z-30 ${
-									isFilterOpen
-										? "opacity-100 translate-y-0 max-h-80 pointer-events-auto"
-										: "opacity-0 -translate-y-2 max-h-0 pointer-events-none"
-								}`}
+								className={`absolute right-0 mt-2 w-full min-w-[260px] backdrop-blur-xl border shadow-xl overflow-hidden z-30 ${getDropdownTransition(isFilterOpen)}`}
 								style={{
 									backgroundColor: hexToRgba(accentColor, 0.82),
 									borderColor: accentPanelBorder,

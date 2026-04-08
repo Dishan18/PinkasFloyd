@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
 import { useTheme } from "@/app/contexts/ThemeContext";
+import { getDropdownTransition } from "@/app/utils/animations";
 
 import { getSupabase } from "../../../lib/supabaseClient";
 
@@ -128,11 +129,7 @@ export default function SiteNavbar() {
 
 			<div
 				aria-hidden={!open}
-				className={`md:hidden absolute left-0 right-0 top-full z-30 transition-opacity duration-200 ease-out ${
-					open
-						? "opacity-100 visible"
-						: "opacity-0 invisible pointer-events-none"
-				}`}
+				className={`md:hidden absolute left-0 right-0 top-full z-30 ${getDropdownTransition(open)}`}
 			>
 				<div 
 					className="px-5 py-4 flex flex-col items-center text-center gap-4"
