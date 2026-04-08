@@ -37,9 +37,6 @@ const ProjectsCarousel = () => {
 			const col = i % itemsPerRow;
 			const row = Math.floor(i / itemsPerRow);
 
-			// Keep a clear gap around SEE MORE so no poster sits under/over it.
-			const middleRow = Math.floor(rows / 2);
-
 			// Angle distributes along the arc
 			const angle = (fov / itemsPerRow) * col - fov / 3;
 			const z = -distance * Math.cos(angle);
@@ -52,10 +49,11 @@ const ProjectsCarousel = () => {
 			const y = startY - row * rowHeight + 1; // +1 offset to match view level
 			const tilePosition = new THREE.Vector3(x, y, z);
 
-			if (row === middleRow) {
-				if (tilePosition.distanceTo(seeMorePosition) < 4) {
-					return null;
-				}
+			// Keep a strict spatial clearing around SEE MORE so no poster sits under/over it.
+			// Remove row constraints and check all posters against a radius.
+			const radius = isMobile ? 5.2 : 4.4;
+			if (tilePosition.distanceTo(seeMorePosition) < radius) {
+				return null;
 			}
 
 			return (

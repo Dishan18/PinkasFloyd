@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 import { getSupabase } from "../../../lib/supabaseClient";
 
@@ -11,6 +12,7 @@ export default function SiteNavbar() {
 	const [open, setOpen] = useState(false);
 	const [user, setUser] = useState<User | null>(null);
 	const supabase = useMemo(() => getSupabase(), []);
+	const { theme } = useTheme();
 
 	useEffect(() => {
 		supabase.auth
@@ -126,13 +128,19 @@ export default function SiteNavbar() {
 
 			<div
 				aria-hidden={!open}
-				className={`md:hidden absolute left-0 right-0 top-full z-30 overflow-hidden transition-all duration-300 ease-out ${
+				className={`md:hidden absolute left-0 right-0 top-full z-30 transition-opacity duration-200 ease-out ${
 					open
-						? "max-h-80 opacity-100 translate-y-0"
-						: "max-h-0 opacity-0 -translate-y-2 pointer-events-none"
+						? "opacity-100 visible"
+						: "opacity-0 invisible pointer-events-none"
 				}`}
 			>
-				<div className="border-t border-white/15 px-5 py-4 flex flex-col items-center text-center gap-4 bg-black/45 backdrop-blur-sm">
+				<div 
+					className="px-5 py-4 flex flex-col items-center text-center gap-4"
+					style={{
+						backgroundColor: theme.color,
+						borderTop: "1px solid rgba(255,255,255,0.15)"
+					}}
+				>
 					<Link
 						href="/shop"
 						className="font-sans text-[11px] uppercase tracking-[0.28rem] text-white/85 hover:text-white transition-colors"

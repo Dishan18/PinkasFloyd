@@ -50,13 +50,13 @@ body[data-non-home="true"] a,
 body[data-non-home="true"] input,
 body[data-non-home="true"] textarea,
 body[data-non-home="true"] select {
-	transition:
-		background-color 240ms ease,
-		border-color 240ms ease,
-		color 240ms ease,
-		opacity 240ms ease,
-		box-shadow 240ms ease,
-		transform 240ms ease;
+	transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+	will-change: transform, opacity;
+}
+
+body[data-non-home="true"] button:active,
+body[data-non-home="true"] a:active {
+	transform: scale(0.965);
 }
 
 body[data-non-home="true"] button,
