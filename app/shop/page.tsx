@@ -15,6 +15,7 @@ import StarsContainer from "../components/models/Stars";
 import CloudContainer from "../components/models/Cloud";
 import SiteNavbar from "../components/common/SiteNavbar";
 import SiteFooter from "../components/common/SiteFooter";
+import PosterSkeletonGrid from "../components/PosterSkeletonGrid";
 
 type CategoryOption = {
 	key: string;
@@ -52,6 +53,7 @@ export default function Shop() {
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
 	const [user, setUser] = useState<ShopUser | null>(null);
 	const [wishlistIds, setWishlistIds] = useState<string[]>([]);
+	const [isInitializing, setIsInitializing] = useState(true);
 	const filterRef = useRef<HTMLDivElement | null>(null);
 	const accentColor = theme.color;
 	const accentPanelBorder = hexToRgba(accentColor, 0.3);
@@ -98,19 +100,27 @@ export default function Shop() {
 	useEffect(() => {
 		document.querySelectorAll(".close").forEach((el) => el.remove());
 
-		async function initWishlist() {
-			const currentUser = await getCurrentUser();
-			setUser(currentUser);
+		async function initData() {
+			try {
+				const currentUser = await getCurrentUser();
+				setUser(currentUser);
 
-			if (!currentUser) {
-				setWishlistIds([]);
-				return;
+				if (!currentUser) {
+					setWishlistIds([]);
+					return;
+				}
+
+				const ids = await fetchWishlistPosterIds(currentUser.id);
+				setWishlistIds(ids);
+			} catch {
+				// fallback 
+			} finally {
+				// Artificial delay to make skeleton aesthetic visible, since
+				// local cache loads so quickly it might flicker
+				setTimeout(() => setIsInitializing(false), 800); 
 			}
-
-			const ids = await fetchWishlistPosterIds(currentUser.id);
-			setWishlistIds(ids);
 		}
-		initWishlist();
+		initData();
 	}, []);
 
 	useEffect(() => {
@@ -279,11 +289,15 @@ export default function Shop() {
 						</div>
 					</header>
 
-					<PosterGrid
-						postersData={filteredPosters}
-						wishlistIds={wishlistIds}
-						onToggleWishlist={handleToggleWishlist}
-					/>
+					{isInitializing ? (
+						<PosterSkeletonGrid count={15} />
+					) : (
+						<PosterGrid
+							postersData={filteredPosters}
+							wishlistIds={wishlistIds}
+							onToggleWishlist={handleToggleWishlist}
+						/>
+					)}
 				</main>
 
 				<SiteFooter />

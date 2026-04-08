@@ -9,6 +9,7 @@ import SiteNavbar from "../components/common/SiteNavbar";
 import SiteFooter from "../components/common/SiteFooter";
 import CloudContainer from "../components/models/Cloud";
 import StarsContainer from "../components/models/Stars";
+import PosterSkeletonGrid from "../components/PosterSkeletonGrid";
 import { posters } from "../constants/posters";
 import {
 	fetchWishlistPosterIds,
@@ -104,16 +105,38 @@ export default function WishlistPage() {
 
 	if (loading) {
 		return (
-			<div
-				className="min-h-screen text-white"
-				style={{ backgroundColor: theme.color, ...noiseOverlayStyle }}
-			>
-				<div className="min-h-screen flex items-center justify-center">
-					<p className="font-sans text-[11px] uppercase tracking-[0.25rem]">
-						Loading Wishlist
-					</p>
+			<>
+				<div
+					className="fixed inset-0 w-full h-full z-0 transition-colors duration-1000"
+					style={{ backgroundColor: theme.color, ...noiseOverlayStyle }}
+				>
+					<Canvas camera={{ position: [0, 0, 1] }}>
+						<ambientLight intensity={0.5} />
+						<StarsContainer />
+						<CloudContainer />
+					</Canvas>
 				</div>
-			</div>
+
+				<div className="relative z-10 min-h-screen flex flex-col pt-14 md:pt-20">
+                    <SiteNavbar />
+                    <main className="max-w-[1800px] mx-auto w-full flex-1 w-full px-6 md:px-12">
+                        <header className="mb-12 md:mb-16 mt-14 md:mt-0">
+                            <p className="font-sans text-white/80 text-[10px] uppercase tracking-[0.5rem] mb-6 flex items-center gap-4">
+                                <span className="w-8 h-[1px] bg-white/35" />
+                                Saved Pieces
+                            </p>
+                            <h1 className="font-serif text-6xl md:text-8xl tracking-tighter leading-[0.9] text-white mb-4">
+                                <span className="italic text-[#bfc6cc]">Loading </span>
+                                <span className="not-italic font-bold">Wishlist</span>
+                            </h1>
+                            <p className="text-white/80 font-sans text-lg max-w-xl leading-relaxed font-light italic">
+                                Retrieving your bookmarked items...
+                            </p>
+                        </header>
+                        <PosterSkeletonGrid count={5} />
+                    </main>
+				</div>
+			</>
 		);
 	}
 
