@@ -7,10 +7,10 @@ import SiteNavbar from "../components/common/SiteNavbar";
 import SiteFooter from "../components/common/SiteFooter";
 import CloudContainer from "../components/models/Cloud";
 import StarsContainer from "../components/models/Stars";
-import { useThemeStore } from "../stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export default function ContactPageClient() {
-	const theme = useThemeStore((state) => state.theme);
+	const { theme } = useTheme();
 
 	const noiseOverlayStyle = {
 		backgroundBlendMode: "soft-light" as const,

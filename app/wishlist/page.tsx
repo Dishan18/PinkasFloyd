@@ -15,7 +15,7 @@ import {
 	getCurrentUser,
 	toggleWishlist,
 } from "../lib/wishlist";
-import { useThemeStore } from "../stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 type AppUser = {
 	id: string;
@@ -23,7 +23,7 @@ type AppUser = {
 
 export default function WishlistPage() {
 	const router = useRouter();
-	const theme = useThemeStore((state) => state.theme);
+	const { theme } = useTheme();
 
 	const [user, setUser] = useState<AppUser | null>(null);
 	const [loading, setLoading] = useState(true);

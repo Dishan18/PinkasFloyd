@@ -6,12 +6,12 @@ import { Canvas } from "@react-three/fiber";
 import SiteNavbar from "../components/common/SiteNavbar";
 import SiteFooter from "../components/common/SiteFooter";
 import StarsContainer from "../components/models/Stars";
-import { useThemeStore } from "../stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import { getSupabase } from "../../lib/supabaseClient";
 
 export default function ResetPasswordPage() {
 	const supabase = useMemo(() => getSupabase(), []);
-	const theme = useThemeStore((state) => state.theme);
+	const { theme } = useTheme();
 
 	const [password, setPassword] = useState("");
 	const [message, setMessage] = useState<string | null>(null);

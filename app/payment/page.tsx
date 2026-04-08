@@ -9,7 +9,7 @@ import SiteFooter from "../components/common/SiteFooter";
 import CloudContainer from "../components/models/Cloud";
 import StarsContainer from "../components/models/Stars";
 import { posters } from "../constants/posters";
-import { useThemeStore } from "../stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import { getSupabase } from "../../lib/supabaseClient";
 
 type OrderItem = {
@@ -42,7 +42,7 @@ type ItemPayload = {
 };
 
 export default function PaymentPage() {
-	const theme = useThemeStore((state) => state.theme);
+	const { theme } = useTheme();
 	const [order, setOrder] = useState<OrderData | null>(null);
 	const [itemsJson, setItemsJson] = useState<ItemPayload[]>([]);
 	const [loading, setLoading] = useState(false);
@@ -136,6 +136,7 @@ export default function PaymentPage() {
 
 			window.localStorage.removeItem("cart");
 			window.localStorage.removeItem("order");
+			window.localStorage.removeItem("checkout-details");
 
 			window.location.assign(whatsappUrl);
 		} catch (err) {

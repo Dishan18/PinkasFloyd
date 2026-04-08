@@ -10,7 +10,7 @@ import {
 	getCurrentUser,
 	toggleWishlist,
 } from "../lib/wishlist";
-import { useThemeStore } from "../stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import StarsContainer from "../components/models/Stars";
 import CloudContainer from "../components/models/Cloud";
 import SiteNavbar from "../components/common/SiteNavbar";
@@ -47,7 +47,7 @@ export default function Shop() {
 	type ShopUser = { id: string };
 
 	const router = useRouter();
-	const theme = useThemeStore((state) => state.theme);
+	const { theme } = useTheme();
 	const [activeCategory, setActiveCategory] = useState("all");
 	const [isFilterOpen, setIsFilterOpen] = useState(false);
 	const [user, setUser] = useState<ShopUser | null>(null);

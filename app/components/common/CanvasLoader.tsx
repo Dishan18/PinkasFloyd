@@ -7,7 +7,7 @@ import gsap from "gsap";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 
-import { useThemeStore } from "@stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import { useIsLowEndMobile } from "../../lib/deviceTier";
 
 import ProgressLoader from "./ProgressLoader";
@@ -18,7 +18,8 @@ import ThemeSwitcher from "./ThemeSwitcher";
 const CanvasLoader = (props: { children: React.ReactNode }) => {
 	const ref = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const backgroundColor = useThemeStore((state) => state.theme.color);
+	const { theme } = useTheme();
+	const backgroundColor = theme.color;
 	const isLowEndMobile = useIsLowEndMobile();
 	const { progress } = useProgress();
 	const [canvasStyle, setCanvasStyle] = useState<React.CSSProperties>({

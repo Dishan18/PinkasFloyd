@@ -9,7 +9,7 @@ import CloudContainer from "@/app/components/models/Cloud";
 import StarsContainer from "@/app/components/models/Stars";
 import SiteNavbar from "@/app/components/common/SiteNavbar";
 import SiteFooter from "@/app/components/common/SiteFooter";
-import { useThemeStore } from "@/app/stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import { FRAMING_COST, posterPriceMap, posters } from "@/app/constants/posters";
 import {
 	fetchWishlistPosterIds,
@@ -66,7 +66,7 @@ export default function PosterDetailClient({
 	initialWishlisted: boolean;
 }) {
 	const router = useRouter();
-	const theme = useThemeStore((state) => state.theme);
+	const { theme } = useTheme();
 	const chartDropdownBg = hexToRgba(theme.color, 0.9);
 	const chartDropdownBorder = hexToRgba(theme.color, 0.34);
 	const [selectedSize, setSelectedSize] = useState(poster.sizes[0] || "A3");

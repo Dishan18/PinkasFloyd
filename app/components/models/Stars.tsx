@@ -1,10 +1,11 @@
-import { useThemeStore } from "@/app/stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import { Stars } from "@react-three/drei";
 import { usePathname } from "next/navigation";
 import { useIsLowEndMobile } from "../../lib/deviceTier";
 
 const StarsContainer = () => {
-	const isDarkTheme = useThemeStore((state) => state.theme.type === "dark");
+	const { theme } = useTheme();
+	const isDarkTheme = theme.type === "dark";
 	const pathname = usePathname();
 	const isLowEndMobile = useIsLowEndMobile();
 

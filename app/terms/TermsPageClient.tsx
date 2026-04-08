@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import SiteNavbar from "../components/common/SiteNavbar";
 import SiteFooter from "../components/common/SiteFooter";
 import StarsContainer from "../components/models/Stars";
-import { useThemeStore } from "../stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const noiseOverlayStyle = {
 	backgroundBlendMode: "soft-light" as const,
@@ -15,7 +15,7 @@ const noiseOverlayStyle = {
 };
 
 export default function TermsPageClient() {
-	const theme = useThemeStore((state) => state.theme);
+	const { theme } = useTheme();
 
 	return (
 		<>

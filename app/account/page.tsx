@@ -9,7 +9,7 @@ import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import SiteFooter from "../components/common/SiteFooter";
 import SiteNavbar from "../components/common/SiteNavbar";
 import StarsContainer from "../components/models/Stars";
-import { useThemeStore } from "../stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import { getSupabase } from "../../lib/supabaseClient";
 
 type AuthMode = "login" | "signup" | "forgot";
@@ -29,7 +29,7 @@ type OrderRecord = {
 
 export default function AccountPage() {
 	const supabase = useMemo(() => getSupabase(), []);
-	const theme = useThemeStore((state) => state.theme);
+	const { theme } = useTheme();
 
 	const [user, setUser] = useState<AppUser | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -223,7 +223,7 @@ export default function AccountPage() {
 
 				{!user ? (
 					<main className="flex-1 flex items-center justify-center py-14 px-4 md:px-8">
-						<div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 border border-white/15 bg-black/20 backdrop-blur-md overflow-hidden">
+						<div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 border border-white/15 bg-black/20 backdrop-blur-md overflow-hidden rounded-[10px]">
 							<div className="hidden md:block relative min-h-[620px]">
 								<div className="absolute inset-0 bg-black/35 z-10" />
 								<Image
@@ -406,7 +406,7 @@ export default function AccountPage() {
 										</span>
 									</h1>
 								</div>
-								<div className="px-5 py-3 border border-white/20 bg-black/20">
+								<div className="px-5 py-3 border border-white/20 bg-black/20 rounded-[10px] w-fit self-start md:self-auto">
 									<span className="font-sans text-[10px] uppercase tracking-[0.22rem] text-white/80">
 										Member
 									</span>
@@ -440,7 +440,7 @@ export default function AccountPage() {
 									</button>
 								</nav>
 
-								<div className="p-6 border border-white/15 bg-black/20">
+								<div className="p-6 border border-white/15 bg-black/20 rounded-[10px]">
 									<h3 className="font-sans text-[10px] uppercase tracking-[0.2rem] text-white/75 mb-5">
 										Account Overview
 									</h3>
@@ -461,7 +461,7 @@ export default function AccountPage() {
 									<div className="h-px flex-1 bg-white/20" />
 								</div>
 
-								<div className="border border-white/15 bg-black/20 p-6 md:p-8">
+								<div className="border border-white/15 bg-black/20 p-6 md:p-8 rounded-[10px]">
 									<h3 className="font-sans text-[10px] uppercase tracking-[0.2rem] text-white/75 mb-7">
 										Personal Information
 									</h3>

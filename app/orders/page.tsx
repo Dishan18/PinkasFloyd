@@ -10,7 +10,7 @@ import SiteNavbar from "../components/common/SiteNavbar";
 import SiteFooter from "../components/common/SiteFooter";
 import StarsContainer from "../components/models/Stars";
 import { posters } from "../constants/posters";
-import { useThemeStore } from "../stores";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import { getSupabase } from "../../lib/supabaseClient";
 
 type OrderItem = {
@@ -35,7 +35,7 @@ type FilterKey = "all" | "pending" | "approved" | "declined";
 
 export default function OrdersPage() {
 	const router = useRouter();
-	const theme = useThemeStore((state) => state.theme);
+	const { theme } = useTheme();
 	const [orders, setOrders] = useState<Order[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [activeFilter, setActiveFilter] = useState<FilterKey>("all");

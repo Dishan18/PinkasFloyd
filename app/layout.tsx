@@ -1,8 +1,11 @@
 import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata, Viewport } from "next";
+import { cookies } from "next/headers";
 import localFont from "next/font/local";
 import "./globals.css";
 import RouteSurfaceScope from "./components/common/RouteSurfaceScope";
+import ThemePreferenceGate from "./components/common/ThemePreferenceGate";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 const soriaFont = localFont({
 	src: "../public/soria-font.ttf",
@@ -74,19 +77,27 @@ export const viewport: Viewport = {
 	maximumScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const cookieStore = await cookies();
+	const themeCookie = cookieStore.get("pf-theme-preference")?.value || "";
+	const hasPreference = Boolean(themeCookie);
+	const initialThemeType = themeCookie === "poppy-pink" ? "light" : "dark";
+
 	return (
-		<html lang="en" className="overscroll-y-none">
+		<html lang="en" className={`overscroll-y-none ${initialThemeType}`}>
 			<body
 				className={`${soriaFont.variable} ${vercettiFont.variable} font-sans antialiased`}
 				data-non-home="false"
 			>
-				<RouteSurfaceScope />
-				{children}
+				<ThemeProvider initialThemeType={initialThemeType} hasPreferenceInitial={hasPreference}>
+					<RouteSurfaceScope />
+					<ThemePreferenceGate />
+					{children}
+				</ThemeProvider>
 			</body>
 			<GoogleAnalytics gaId={"G-7WD4HM3XRE"} />
 		</html>
