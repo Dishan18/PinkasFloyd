@@ -58,12 +58,21 @@ export const metadata: Metadata = {
 		siteName: "Pinkasfloyd",
 		locale: "en_IN",
 		type: "website",
+		images: [
+			{
+				url: "/pink.jpg",
+				width: 1200,
+				height: 630,
+				alt: "Pinkasfloyd Poster Store",
+			},
+		],
 	},
 	twitter: {
 		card: "summary_large_image",
 		title: "Pinkasfloyd | Poster Store",
 		description:
 			"A curated poster store for collectible prints inspired by music, cinema, and culture.",
+		images: ["/pink.jpg"],
 	},
 	verification: {
 		google: "GsRYY-ivL0F_VKkfs5KAeToliqz0gCrRAJKKmFkAxBA",
