@@ -17,6 +17,7 @@ type AuthMode = "login" | "signup" | "forgot";
 type AppUser = {
 	id: string;
 	email?: string;
+	email_confirmed_at?: string;
 };
 
 type OrderItem = {
@@ -520,7 +521,7 @@ export default function AccountPage() {
 												Account Status
 											</p>
 											<p className="font-sans text-sm text-white">
-												Verified Member
+												{user.email_confirmed_at ? "Verified Member" : "Pending Verification"}
 											</p>
 										</div>
 									</div>
