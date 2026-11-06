@@ -2,21 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Canvas } from "@react-three/fiber";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import CloudContainer from "@/app/components/models/Cloud";
-import StarsContainer from "@/app/components/models/Stars";
 import SiteNavbar from "@/app/components/common/SiteNavbar";
+import PageBackground from "@/app/components/common/PageBackground";
 import SiteFooter from "@/app/components/common/SiteFooter";
 import { useTheme } from "@/app/contexts/ThemeContext";
 import { getDropdownTransition } from "@/app/utils/animations";
-import { FRAMING_COST, posterPriceMap, posters } from "@/app/constants/posters";
+import { FRAMING_COST, posterName, posterPriceMap, posters } from "@/app/constants/posters";
 import {
 	fetchWishlistPosterIds,
 	getCurrentUser,
 	toggleWishlist,
 } from "@/app/lib/wishlist";
+import { hexToRgba } from "@/app/utils/styles";
 
 type Poster = {
 	id: string;
@@ -46,16 +45,6 @@ const sizeChartRows = [
 
 const formatSizeLabel = (size: string) => (size === "12x12" ? "12*12" : size);
 
-function hexToRgba(hex: string, alpha: number) {
-	const normalized = hex.replace("#", "");
-	if (normalized.length !== 6) return `rgba(255, 255, 255, ${alpha})`;
-
-	const r = Number.parseInt(normalized.slice(0, 2), 16);
-	const g = Number.parseInt(normalized.slice(2, 4), 16);
-	const b = Number.parseInt(normalized.slice(4, 6), 16);
-
-	return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
 
 export default function PosterDetailClient({
 	poster,
@@ -141,13 +130,6 @@ export default function PosterDetailClient({
 		}
 	}, [displaySizes, selectedSize]);
 
-	const noiseOverlayStyle = {
-		backgroundBlendMode: "soft-light" as const,
-		backgroundImage:
-			"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E\")",
-		backgroundRepeat: "repeat" as const,
-		backgroundSize: "100px",
-	};
 
 	function addToCart() {
 		if (isAddingToCart || typeof window === "undefined") return;
@@ -211,16 +193,7 @@ export default function PosterDetailClient({
 
 	return (
 		<>
-			<div
-				className="fixed inset-0 w-full h-full z-0 transition-colors duration-1000"
-				style={{ backgroundColor: theme.color, ...noiseOverlayStyle }}
-			>
-				<Canvas camera={{ position: [0, 0, 1] }}>
-					<ambientLight intensity={0.5} />
-					<StarsContainer />
-					<CloudContainer />
-				</Canvas>
-			</div>
+			<PageBackground />
 
 			<div className="relative z-10 min-h-screen lg:h-screen lg:min-h-0 lg:overflow-hidden flex flex-col">
 				<SiteNavbar />
@@ -283,7 +256,7 @@ export default function PosterDetailClient({
 									{poster.category?.[0] || "archive"}
 								</span>
 								<h1 className="font-serif italic text-5xl md:text-6xl leading-[1.1] tracking-tighter capitalize text-[#bfc6cc]">
-									Artifact {poster.id}
+									{posterName(poster)}
 								</h1>
 								<div className="flex items-baseline space-x-2">
 									<p className="font-serif text-3xl leading-none tracking-tighter">

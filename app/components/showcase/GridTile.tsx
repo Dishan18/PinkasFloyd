@@ -70,11 +70,15 @@ const GridTile = (props: GridTileProps) => {
 		}
 	});
 
-	const handleEscape = (e: KeyboardEvent) => {
+	// Stable handler so removeEventListener actually detaches it; the ref
+	// always points at the latest exitPortal closure.
+	const exitPortalRef = useRef<(force?: boolean) => void>(() => {});
+	const handleEscapeRef = useRef((e: KeyboardEvent) => {
 		if (e.key === "Escape") {
-			exitPortal(true);
+			exitPortalRef.current(true);
 		}
-	};
+	});
+	const handleEscape = handleEscapeRef.current;
 
 	const portalInto = (e: React.MouseEvent) => {
 		if (isActive || activePortalId) return;
@@ -144,6 +148,7 @@ const GridTile = (props: GridTileProps) => {
 		});
 		document.body.removeEventListener("keydown", handleEscape);
 	};
+	exitPortalRef.current = exitPortal;
 
 	const fontProps: Partial<TextProps> = {
 		font: "./soria-font.ttf",

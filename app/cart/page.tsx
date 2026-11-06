@@ -2,14 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Canvas } from "@react-three/fiber";
 import { useEffect, useMemo, useState } from "react";
 
 import SiteFooter from "../components/common/SiteFooter";
 import SiteNavbar from "../components/common/SiteNavbar";
-import StarsContainer from "../components/models/Stars";
-import { FRAMING_COST, posterPriceMap, posters } from "../constants/posters";
-import { useTheme } from "@/app/contexts/ThemeContext";
+import PageBackground from "@/app/components/common/PageBackground";
+import { FRAMING_COST, posterName, posterPriceMap, posters } from "../constants/posters";
 import { getSupabase } from "../../lib/supabaseClient";
 
 type CartItem = {
@@ -36,7 +34,6 @@ function normalizeCart(items: CartItem[]): CartItem[] {
 }
 
 export default function CartPage() {
-	const { theme } = useTheme();
 	const [cart, setCart] = useState<CartItem[]>([]);
 	const [user, setUser] = useState<User | null>(null);
 	const [isDiscountApplied, setIsDiscountApplied] = useState(false);
@@ -184,11 +181,13 @@ export default function CartPage() {
 
 		setIsCheckingOut(true);
 
+		// Time-based prefix + random suffix: the old 4+3 random digits could
+		// collide with an existing order and make the insert fail.
 		const orderId =
 			"VA-" +
-			Math.floor(1000 + Math.random() * 9000) +
+			Date.now().toString(36).toUpperCase() +
 			"-" +
-			Math.floor(100 + Math.random() * 900);
+			Math.random().toString(36).slice(2, 6).toUpperCase();
 
 		const order = {
 			orderId,
@@ -200,7 +199,7 @@ export default function CartPage() {
 				const poster = posters.find((p) => p.id === item.id);
 				return {
 					...item,
-					title: poster ? poster.id.replace(/-/g, " ") : "Archive Item",
+					title: poster ? posterName(poster) : "Archive Item",
 				};
 			}),
 			total,
@@ -212,25 +211,10 @@ export default function CartPage() {
 		}, 450);
 	}
 
-	const noiseOverlayStyle = {
-		backgroundBlendMode: "soft-light" as const,
-		backgroundImage:
-			"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E\")",
-		backgroundRepeat: "repeat" as const,
-		backgroundSize: "100px",
-	};
 
 	return (
 		<>
-			<div
-				className="fixed inset-0 w-full h-full z-0 transition-colors duration-1000"
-				style={{ backgroundColor: theme.color, ...noiseOverlayStyle }}
-			>
-				<Canvas camera={{ position: [0, 0, 1] }}>
-					<ambientLight intensity={0.5} />
-					<StarsContainer />
-				</Canvas>
-			</div>
+			<PageBackground />
 
 			<div className="relative z-10 min-h-screen flex flex-col text-white">
 				<SiteNavbar />
@@ -300,7 +284,7 @@ export default function CartPage() {
 													<div className="grow">
 														<div className="flex items-start justify-between gap-2 mb-1.5">
 															<h3 className="font-serif text-lg md:text-xl capitalize leading-tight">
-																{poster.id.replace(/-/g, " ")}
+																{posterName(poster)}
 															</h3>
 															<span className="font-sans text-[11px] md:text-xs uppercase tracking-[0.18rem] text-white/85">
 																Rs {item.price * qty}

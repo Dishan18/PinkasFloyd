@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Canvas } from "@react-three/fiber";
 import PosterGrid from "../components/PosterGrid";
 import { posters } from "../constants/posters";
 import {
@@ -11,12 +10,12 @@ import {
 	toggleWishlist,
 } from "../lib/wishlist";
 import { useTheme } from "@/app/contexts/ThemeContext";
-import StarsContainer from "../components/models/Stars";
-import CloudContainer from "../components/models/Cloud";
 import SiteNavbar from "../components/common/SiteNavbar";
+import PageBackground from "@/app/components/common/PageBackground";
 import SiteFooter from "../components/common/SiteFooter";
 import PosterSkeletonGrid from "../components/PosterSkeletonGrid";
 import { getDropdownTransition } from "@/app/utils/animations";
+import { hexToRgba } from "@/app/utils/styles";
 
 type CategoryOption = {
 	key: string;
@@ -34,16 +33,6 @@ function categoryToLabel(category: string) {
 	return category.charAt(0).toUpperCase() + category.slice(1);
 }
 
-function hexToRgba(hex: string, alpha: number) {
-	const normalized = hex.replace("#", "");
-	if (normalized.length !== 6) return `rgba(255, 255, 255, ${alpha})`;
-
-	const r = Number.parseInt(normalized.slice(0, 2), 16);
-	const g = Number.parseInt(normalized.slice(2, 4), 16);
-	const b = Number.parseInt(normalized.slice(4, 6), 16);
-
-	return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
 
 export default function Shop() {
 	type ShopUser = { id: string };
@@ -101,6 +90,10 @@ export default function Shop() {
 	useEffect(() => {
 		document.querySelectorAll(".close").forEach((el) => el.remove());
 
+		// Posters are static, so show them right away; wishlist hearts fill
+		// in once the user and their wishlist have loaded.
+		setIsInitializing(false);
+
 		async function initData() {
 			try {
 				const currentUser = await getCurrentUser();
@@ -114,11 +107,7 @@ export default function Shop() {
 				const ids = await fetchWishlistPosterIds(currentUser.id);
 				setWishlistIds(ids);
 			} catch {
-				// fallback 
-			} finally {
-				// Artificial delay to make skeleton aesthetic visible, since
-				// local cache loads so quickly it might flicker
-				setTimeout(() => setIsInitializing(false), 800); 
+				// Wishlist is optional; ignore network/auth failures.
 			}
 		}
 		initData();
@@ -164,26 +153,10 @@ export default function Shop() {
 		);
 	}
 
-	const noiseOverlayStyle = {
-		backgroundBlendMode: "soft-light",
-		backgroundImage:
-			"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E\")",
-		backgroundRepeat: "repeat",
-		backgroundSize: "100px",
-	};
 
 	return (
 		<>
-			<div
-				className="fixed inset-0 w-full h-full z-0 transition-colors duration-1000"
-				style={{ backgroundColor: theme.color, ...noiseOverlayStyle }}
-			>
-				<Canvas camera={{ position: [0, 0, 1] }}>
-					<ambientLight intensity={0.5} />
-					<StarsContainer />
-					<CloudContainer />
-				</Canvas>
-			</div>
+			<PageBackground />
 
 			<div className="relative z-10 min-h-screen flex flex-col">
 				<SiteNavbar />

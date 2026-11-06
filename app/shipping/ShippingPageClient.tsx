@@ -1,33 +1,15 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
 import SiteNavbar from "../components/common/SiteNavbar";
+import PageBackground from "@/app/components/common/PageBackground";
 import SiteFooter from "../components/common/SiteFooter";
-import StarsContainer from "../components/models/Stars";
-import { useTheme } from "@/app/contexts/ThemeContext";
 
-const noiseOverlayStyle = {
-	backgroundBlendMode: "soft-light" as const,
-	backgroundImage:
-		"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E\")",
-	backgroundRepeat: "repeat" as const,
-	backgroundSize: "100px",
-};
 
 export default function ShippingPageClient() {
-	const { theme } = useTheme();
 
 	return (
 		<>
-			<div
-				className="fixed inset-0 w-full h-full z-0 transition-colors duration-1000"
-				style={{ backgroundColor: theme.color, ...noiseOverlayStyle }}
-			>
-				<Canvas camera={{ position: [0, 0, 1] }}>
-					<ambientLight intensity={0.5} />
-					<StarsContainer />
-				</Canvas>
-			</div>
+			<PageBackground />
 
 			<div className="relative z-10 min-h-screen flex flex-col text-white">
 				<SiteNavbar />

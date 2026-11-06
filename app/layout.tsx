@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 	title: "Pinkasfloyd | Poster Store",
 	description:
 		"A curated poster store for collectible prints inspired by music, cinema, and culture.",
-	metadataBase: new URL("https://pinkasfloyd.in"),
+	metadataBase: new URL("https://www.pinkasfloyd.in"),
 	alternates: {
 		canonical: "/",
 	},
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
 		title: "Pinkasfloyd | Poster Store",
 		description:
 			"A curated poster store for collectible prints inspired by music, cinema, and culture.",
-		url: "https://pinkasfloyd.in",
+		url: "https://www.pinkasfloyd.in",
 		siteName: "Pinkasfloyd",
 		locale: "en_IN",
 		type: "website",
@@ -108,7 +108,9 @@ export default async function RootLayout({
 					{children}
 				</ThemeProvider>
 			</body>
-			<GoogleAnalytics gaId={"G-7WD4HM3XRE"} />
+			{process.env.NODE_ENV === "production" && (
+				<GoogleAnalytics gaId={"G-7WD4HM3XRE"} />
+			)}
 		</html>
 	);
 }

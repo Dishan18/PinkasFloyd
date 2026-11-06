@@ -7,7 +7,7 @@ Disallow: /payment
 Disallow: /orders
 Disallow: /wishlist
 Disallow: /reset-password
-Disallow: /_next/
-Host: https://pinkasfloyd.in
 
-Sitemap: https://pinkasfloyd.in/sitemap.xml
+Host: www.pinkasfloyd.in
+
+Sitemap: https://www.pinkasfloyd.in/sitemap.xml

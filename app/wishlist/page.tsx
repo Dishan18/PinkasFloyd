@@ -2,13 +2,11 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Canvas } from "@react-three/fiber";
 
 import PosterGrid from "../components/PosterGrid";
 import SiteNavbar from "../components/common/SiteNavbar";
+import PageBackground from "@/app/components/common/PageBackground";
 import SiteFooter from "../components/common/SiteFooter";
-import CloudContainer from "../components/models/Cloud";
-import StarsContainer from "../components/models/Stars";
 import PosterSkeletonGrid from "../components/PosterSkeletonGrid";
 import { posters } from "../constants/posters";
 import {
@@ -16,7 +14,6 @@ import {
 	getCurrentUser,
 	toggleWishlist,
 } from "../lib/wishlist";
-import { useTheme } from "@/app/contexts/ThemeContext";
 
 type AppUser = {
 	id: string;
@@ -24,7 +21,6 @@ type AppUser = {
 
 export default function WishlistPage() {
 	const router = useRouter();
-	const { theme } = useTheme();
 
 	const [user, setUser] = useState<AppUser | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -95,27 +91,11 @@ export default function WishlistPage() {
 		return posters.filter((poster) => wishlistIds.includes(poster.id));
 	}, [wishlistIds]);
 
-	const noiseOverlayStyle = {
-		backgroundBlendMode: "soft-light" as const,
-		backgroundImage:
-			"url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 600'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3C/svg%3E\")",
-		backgroundRepeat: "repeat" as const,
-		backgroundSize: "100px",
-	};
 
 	if (loading) {
 		return (
 			<>
-				<div
-					className="fixed inset-0 w-full h-full z-0 transition-colors duration-1000"
-					style={{ backgroundColor: theme.color, ...noiseOverlayStyle }}
-				>
-					<Canvas camera={{ position: [0, 0, 1] }}>
-						<ambientLight intensity={0.5} />
-						<StarsContainer />
-						<CloudContainer />
-					</Canvas>
-				</div>
+				<PageBackground />
 
 				<div className="relative z-10 min-h-screen flex flex-col pt-14 md:pt-20">
                     <SiteNavbar />
@@ -142,16 +122,7 @@ export default function WishlistPage() {
 
 	return (
 		<>
-			<div
-				className="fixed inset-0 w-full h-full z-0 transition-colors duration-1000"
-				style={{ backgroundColor: theme.color, ...noiseOverlayStyle }}
-			>
-				<Canvas camera={{ position: [0, 0, 1] }}>
-					<ambientLight intensity={0.5} />
-					<StarsContainer />
-					<CloudContainer />
-				</Canvas>
-			</div>
+			<PageBackground />
 
 			<div className="relative z-10 min-h-screen flex flex-col">
 				<SiteNavbar />
